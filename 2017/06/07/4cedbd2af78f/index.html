@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+  <meta name="google-site-verification" content="cSvV2OW-MuBv49QhZpgdW4F4NlFoerHVQJsKRi-QES8">
+  <meta name="baidu-site-verification" content="code-p9gsJVipeB">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.ipage.fun","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="近期Chrome发布了59版本，那么与开发者最贴近的开发者工具中带来了什么新功能呢？  CSS&amp;JS代码使用率检测 这个功能可以在Coverage Tab中展示使用到与未使用到的代码占比 全页面截图，传说中的超长截图。入口需要把模式切换成移动设备模式，更多 - Capture full size screenshot 阻止网络请求。 手动的方式在网络面板阻止单个网络请求，方便进行页面的调试">
+<meta property="og:type" content="article">
+<meta property="og:title" content="What&#39;s new in DevTools (chrome 59)">
+<meta property="og:url" content="https://blog.ipage.fun/2017/06/07/4cedbd2af78f/index.html">
+<meta property="og:site_name" content="知遇">
+<meta property="og:description" content="近期Chrome发布了59版本，那么与开发者最贴近的开发者工具中带来了什么新功能呢？  CSS&amp;JS代码使用率检测 这个功能可以在Coverage Tab中展示使用到与未使用到的代码占比 全页面截图，传说中的超长截图。入口需要把模式切换成移动设备模式，更多 - Capture full size screenshot 阻止网络请求。 手动的方式在网络面板阻止单个网络请求，方便进行页面的调试">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNbRwly1fgcnceh64vj30uy0ciacm.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNbRwly1fgcnd6qbfij30dq0dm0u8.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNbRwly1fgcne5w8a0j30mc0bs40b.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNbRwly1fgcnh1kkroj30t80js7a7.jpg">
+<meta property="article:published_time" content="2017-06-07T03:34:54.000Z">
+<meta property="article:modified_time" content="2022-01-10T10:45:32.684Z">
+<meta property="article:author" content="JUNL">
+<meta property="article:tag" content="Chrome">
+<meta property="article:tag" content="DevTools">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ws4.sinaimg.cn/large/006tNbRwly1fgcnceh64vj30uy0ciacm.jpg">
+
+
+<link rel="canonical" href="https://blog.ipage.fun/2017/06/07/4cedbd2af78f/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.ipage.fun/2017/06/07/4cedbd2af78f/","path":"2017/06/07/4cedbd2af78f/","title":"What's new in DevTools (chrome 59)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>What's new in DevTools (chrome 59) | 知遇</title>
+  
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?c5db6080b80bee351c6f8bc8f28fcf37"></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">知遇</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">活着就是折腾，甘愿做，欢喜受。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">JUNL</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/langjun" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;langjun" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:leo.langjun@gmail.com" title="E-Mail → mailto:leo.langjun@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.ipage.fun/2017/06/07/4cedbd2af78f/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="JUNL">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="知遇">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          What's new in DevTools (chrome 59)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-06-07 11:34:54" itemprop="dateCreated datePublished" datetime="2017-06-07T11:34:54+08:00">2017-06-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-01-10 18:45:32" itemprop="dateModified" datetime="2022-01-10T18:45:32+08:00">2022-01-10</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="firestore-visitors-count"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2017/06/07/4cedbd2af78f/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/06/07/4cedbd2af78f/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>近期Chrome发布了59版本，那么与开发者最贴近的开发者工具中带来了什么新功能呢？</p>
+<ul>
+<li>CSS&amp;JS代码使用率检测<ul>
+<li>这个功能可以在Coverage Tab中展示使用到与未使用到的代码占比<br><img data-src="https://ws4.sinaimg.cn/large/006tNbRwly1fgcnceh64vj30uy0ciacm.jpg"></li>
+<li>全页面截图，传说中的超长截图。入口需要把模式切换成移动设备模式，更多 - <code>Capture full size screenshot</code><br><img data-src="https://ws1.sinaimg.cn/large/006tNbRwly1fgcnd6qbfij30dq0dm0u8.jpg"></li>
+<li>阻止网络请求。 手动的方式在网络面板阻止单个网络请求，方便进行页面的调试<br><img data-src="https://ws4.sinaimg.cn/large/006tNbRwly1fgcne5w8a0j30mc0bs40b.jpg"></li>
+<li>单步调试async/await<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">function wait(ms) &#123;</span><br><span class="line">    return new Promise(r =&gt; setTimeout(r, ms)).then(() =&gt; &quot;Yay&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// do some work in background.</span><br><span class="line">setInterval(() =&gt; 42, 200);</span><br><span class="line"></span><br><span class="line">async function test() &#123;</span><br><span class="line">    debugger;</span><br><span class="line">    const hello = &quot;world&quot;;</span><br><span class="line">    const response = await fetch(&#x27;index.html&#x27;);</span><br><span class="line">    const tmp = await wait(1000);</span><br><span class="line">    console.log(tmp);</span><br><span class="line">    return hello;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">async function runTest() &#123;</span><br><span class="line">    let result = await test();</span><br><span class="line">    console.log(result);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>统一命令行菜单 在开发者工具中使用Command + o调起<br><img data-src="https://ws2.sinaimg.cn/large/006tNbRwly1fgcnh1kkroj30t80js7a7.jpg"></li>
+</ul>
+</li>
+</ul>
+<p>这些新增特性使用起来非常酷，可以在实际工作中使用起来。<br><a target="_blank" rel="noopener" href="https://developers.google.com/web/updates/2017/04/devtools-release-notes#highlights">详细请点击这里</a></p>
+<p>以上</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Chrome/" rel="tag"># Chrome</a>
+              <a href="/tags/DevTools/" rel="tag"># DevTools</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/06/02/7850c7cd25e0/" rel="prev" title="FIIL Diva Pro">
+                  <i class="fa fa-chevron-left"></i> FIIL Diva Pro
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/06/09/aa514f067726/" rel="next" title="chrome headless探索">
+                  chrome headless探索 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">JUNL</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/medium-zoom@1.0.6/dist/medium-zoom.min.js" integrity="sha256-EdPgYcPk/IIrw7FYeuJQexva49pVRZNmt3LculEr7zM=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/firebase@9.6.1/firebase-app-compat.js" integrity="sha256-JsxtczVneqccOYjvdg7KAeYkwWAFqzh0koxVYAe2hSk=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/firebase@9.6.1/firebase-firestore-compat.js" integrity="sha256-XxQ63CdYZ3FP1cHDOjaCViOXFcz7wFIfMHsb6UQVWH0=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="firestore" type="application/json">{"enable":true,"collection":"articles","apiKey":"AIzaSyDnTJoF6y33b2BtAnjcdXgq8LDalFNnjp8","projectId":"nodal-listener-325607"}</script>
+  <script src="/js/third-party/statistics/firestore.js"></script>
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"ipage-1","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

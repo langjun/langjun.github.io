@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+  <meta name="google-site-verification" content="cSvV2OW-MuBv49QhZpgdW4F4NlFoerHVQJsKRi-QES8">
+  <meta name="baidu-site-verification" content="code-p9gsJVipeB">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.ipage.fun","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="团队一直在支持视频提链的需求，近期利用chrome headless进行升级，效率大大提升。那么chrome headless是什么呢？ 通过官方更新日志了解到，在chrome 59的版本加入了headless模式，所谓的headless就是一个无界面的浏览器，可以想有界面浏览器一样浏览网页，但无法直接看到页面。需要利用chrome远程调试接口进行调试。 那么，提供这样一个无界面的浏览器有什么用呢">
+<meta property="og:type" content="article">
+<meta property="og:title" content="chrome headless探索">
+<meta property="og:url" content="https://blog.ipage.fun/2017/06/09/aa514f067726/index.html">
+<meta property="og:site_name" content="知遇">
+<meta property="og:description" content="团队一直在支持视频提链的需求，近期利用chrome headless进行升级，效率大大提升。那么chrome headless是什么呢？ 通过官方更新日志了解到，在chrome 59的版本加入了headless模式，所谓的headless就是一个无界面的浏览器，可以想有界面浏览器一样浏览网页，但无法直接看到页面。需要利用chrome远程调试接口进行调试。 那么，提供这样一个无界面的浏览器有什么用呢">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-06-09T09:31:20.000Z">
+<meta property="article:modified_time" content="2022-01-10T10:45:32.684Z">
+<meta property="article:author" content="JUNL">
+<meta property="article:tag" content="Chrome">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.ipage.fun/2017/06/09/aa514f067726/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.ipage.fun/2017/06/09/aa514f067726/","path":"2017/06/09/aa514f067726/","title":"chrome headless探索"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>chrome headless探索 | 知遇</title>
+  
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?c5db6080b80bee351c6f8bc8f28fcf37"></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">知遇</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">活着就是折腾，甘愿做，欢喜受。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8"><span class="nav-number">1.</span> <span class="nav-text">启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%83%E8%AF%95ui%E7%95%8C%E9%9D%A2"><span class="nav-number">2.</span> <span class="nav-text">调试ui界面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#in-the-end"><span class="nav-number">3.</span> <span class="nav-text">in the end</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">JUNL</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/langjun" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;langjun" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:leo.langjun@gmail.com" title="E-Mail → mailto:leo.langjun@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.ipage.fun/2017/06/09/aa514f067726/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="JUNL">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="知遇">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          chrome headless探索
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-06-09 17:31:20" itemprop="dateCreated datePublished" datetime="2017-06-09T17:31:20+08:00">2017-06-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-01-10 18:45:32" itemprop="dateModified" datetime="2022-01-10T18:45:32+08:00">2022-01-10</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="firestore-visitors-count"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2017/06/09/aa514f067726/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/06/09/aa514f067726/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>团队一直在支持视频提链的需求，近期利用chrome headless进行升级，效率大大提升。那么chrome headless是什么呢？</p>
+<p>通过<a target="_blank" rel="noopener" href="https://developers.google.com/web/updates/2017/04/headless-chrome">官方更新日志</a>了解到，在chrome 59的版本加入了headless模式，所谓的headless就是一个无界面的浏览器，可以想有界面浏览器一样浏览网页，但无法直接看到页面。需要利用chrome远程调试接口进行调试。</p>
+<p>那么，提供这样一个无界面的浏览器有什么用呢？官方给的答案是这样的</p>
+<blockquote>
+<p>Why is that useful?</p>
+</blockquote>
+<blockquote>
+<p>A headless browser is a great tool for automated testing and server environments where you don’t need a visible UI shell. For example, you may want to run some tests against a real web page, create a PDF of it, or just inspect how the browser renders an URL.</p>
+</blockquote>
+<p>事实上，除了所描述的场景，还有更多的里有你会去使用他！</p>
+<span id="more"></span>
+
+<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><blockquote>
+<p>首先确保你已经安装了chrome 59，本例在macOS中进行演示。</p>
+</blockquote>
+<ol>
+<li>为了方便使用，首先在命令行工具中设置chrome别名<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alias chrome=&quot;/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome&quot;</span><br></pre></td></tr></table></figure></li>
+<li>命令启动<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chrome --headless www.baidu.com</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>更多的命令参数，请大家自行挖掘</p>
+<h2 id="调试ui界面"><a href="#调试ui界面" class="headerlink" title="调试ui界面"></a>调试ui界面</h2><blockquote>
+<p>如果想要调试UI界面，需要在启动时加上调试端口参数</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chrome --headless --remote-debugging-port=9222 www.baidu.com</span><br></pre></td></tr></table></figure>
+<p>这样，在有图形界面的chrome中输入 <code>http://localhost:9222</code> 既可看到Baidu的首页了</p>
+<p>通过以上步骤，既可以启动chrome headless模式，并进行调试了。如果你需要更多api，可以使用<a target="_blank" rel="noopener" href="https://www.npmjs.com/package/chrome-remote-interface">chrome-remote-interface</a> 使用nodejs来写自己的处理程序</p>
+<h2 id="in-the-end"><a href="#in-the-end" class="headerlink" title="in the end"></a>in the end</h2><p>团队使用chrome headless模式进行各大视频网站的视频提链，效率极大提升，得益于这种NO GUI的浏览器的稳定以及丰富的调试API</p>
+<p>以上</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Chrome/" rel="tag"># Chrome</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/06/07/4cedbd2af78f/" rel="prev" title="What's new in DevTools (chrome 59)">
+                  <i class="fa fa-chevron-left"></i> What's new in DevTools (chrome 59)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/06/19/774b41bb3135/" rel="next" title="在微信、QQ中进行二次分享小结">
+                  在微信、QQ中进行二次分享小结 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">JUNL</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/medium-zoom@1.0.6/dist/medium-zoom.min.js" integrity="sha256-EdPgYcPk/IIrw7FYeuJQexva49pVRZNmt3LculEr7zM=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lozad@1.16.0/dist/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/firebase@9.6.1/firebase-app-compat.js" integrity="sha256-JsxtczVneqccOYjvdg7KAeYkwWAFqzh0koxVYAe2hSk=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/firebase@9.6.1/firebase-firestore-compat.js" integrity="sha256-XxQ63CdYZ3FP1cHDOjaCViOXFcz7wFIfMHsb6UQVWH0=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="firestore" type="application/json">{"enable":true,"collection":"articles","apiKey":"AIzaSyDnTJoF6y33b2BtAnjcdXgq8LDalFNnjp8","projectId":"nodal-listener-325607"}</script>
+  <script src="/js/third-party/statistics/firestore.js"></script>
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"ipage-1","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>
